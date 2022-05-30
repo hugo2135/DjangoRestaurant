@@ -19,16 +19,24 @@ def addRestaurant(request):
         else:
             HttpResponse(""" Input Wrong. Please reload this website by click <a href="{{url:'index'}}">Reload</a>""")
     else:
-        return render(request, 'Restaurant/editRestaurant.html', {'addRestaurant_form':addRestaurant})
+        return render(request, 'Restaurant/editRestaurant.html', {'Restaurant_form':addRestaurant})
 
 def editRestaurant(request, restaturant_id):
     restaturant_id = int(restaturant_id)
     try:
-        restaturant_shelf = Restaurant.objects.get(id = restaturant_id)
+        restaturant_selected = Restaurant.objects.get(id = restaturant_id)
     except Restaurant.DoesNotExist:
         return redirect('index')
-    restaturant_form = RestaurantCreate(request.POST or None, instance=restaturant_shelf)
+    restaturant_form = RestaurantCreate(request.POST or None, instance=restaturant_selected)
     if restaturant_form.is_valid():
         restaturant_form.save()
         return redirect('index')
-    return render(request, 'Restaurant/editRestaurant.html', {'editRestaurant_form':restaturant_form})
+    return render(request, 'Restaurant/editRestaurant.html', {'Restaurant_form':restaturant_form})
+
+def deleteRestaurant(request, restaturant_id):
+    try:
+        restaturant_selected = Restaurant.objects.get(id = restaturant_id)
+    except:
+        return redirect('index')
+    restaturant_selected.delete()
+    return redirect('index')
