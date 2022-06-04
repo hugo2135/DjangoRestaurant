@@ -1,8 +1,8 @@
-from urllib import response
 from django.test import TestCase
 from django.urls import resolve
 from Restaurant.models import Restaurant
 from . import views,forms
+from selenium import webdriver
 
 # Create your tests her
 class ResturantModelTestCase(TestCase):
