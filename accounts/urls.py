@@ -5,6 +5,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('', views.register, name='register'),
+    path('edit/<int:account_id>', views.editAccount),
 ]
 
 if DEBUG :
