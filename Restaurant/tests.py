@@ -1,8 +1,10 @@
+from urllib import response
 from django.test import TestCase
 from django.urls import resolve
 from Restaurant.models import Restaurant
 from . import views,forms
 from selenium import webdriver
+from django.contrib.auth.models import User
 
 # Create your tests her
 class ResturantModelTestCase(TestCase):
@@ -54,8 +56,9 @@ class ResturantModelTestCase(TestCase):
         resturant2 = Restaurant.objects.get(Name='Bobs BBQ')
         self.assertEqual(resturant2.Rating, 1.5)
         
-class TestWebPagesView(TestCase):
+class TestResturantViewLoggedIn(TestCase):
     def setUp(self):
+        #Simulate 2 resturants
         resturant1 = Restaurant.objects.create(Name='Pizza Palace', Style='Italian', Price=100,
                                          Img='None',Distance=1.5, Address='清水河畔', Rating=4.5)
         resturant2 = Restaurant.objects.create(Name='Bobs BBQ', Style='BBQ', Price=65, 
@@ -63,26 +66,86 @@ class TestWebPagesView(TestCase):
         forms.RestaurantCreate(resturant1)
         forms.RestaurantCreate(resturant2)
         
-    def test_resolve_to_home_page(self):
-        resolver = resolve('/restaurants/')                                   #我有改基底url，這邊就一起動了
+        # Simulate a logged in user
+        User.objects.create_user(username='testuser', password='12345')
+        self.client.login(username='testuser', password='12345')
+        self.added_data= {'Name':"Kevin's BBQ", 'Style':'BBQ', 'Price':500,
+                     'Img':'None','Distance':6, 'Address':'行天宮', 'Rating':4.5}
+    def test_resolve_to_homepage(self):
+        resolver = resolve('/')                                   #我有改基底url，這邊就一起動了
         self.assertEqual(resolver.view_name, 'index')
         
-    def test_get_home_page(self):
-        response = self.client.get('/restaurants/')
+        
+    def test_get_homepage(self):
+        response = self.client.get('/')
         self.assertTemplateUsed(response, 'Restaurant/listRestaurant.html')
+        self.assertEqual(response.status_code, 200)
         
-    def test_get_add_restaurant(self):
-        response = self.client.get('/restaurants/add/')
+    def test_get_addRestaurant(self):
+        # Check used correct template
+        response = self.client.get('/add/')
         self.assertTemplateUsed(response, 'Restaurant/editRestaurant.html')
+        self.assertEqual(response.status_code, 200)
+        # Check Resturant correctly added
+        response = self.client.post('/add/', self.added_data, follow=True)
+        resturant = Restaurant.objects.get(id=3)
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, '/')
+        self.assertEqual(resturant.Name, "Kevin's BBQ")
         
-    def test_get_edit_restaurant(self):
-        response_1 = self.client.get('/restaurants/edit/1')
+    def test_get_editRestaurant(self):
+        # Check used correct template
+        response_1 = self.client.get('/edit/1')
+        self.assertEqual(response_1.status_code, 200)
         self.assertTemplateUsed(response_1, 'Restaurant/editRestaurant.html')
-        response_2 = self.client.get('/restaurants/edit/2')
+        response_2 = self.client.get('/edit/2')
+        self.assertEqual(response_2.status_code, 200)
         self.assertTemplateUsed(response_2, 'Restaurant/editRestaurant.html')
+        # Check Resturant correctly edited
+        response = self.client.post('/edit/1', self.added_data, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, '/')
+        resturant = Restaurant.objects.get(id=1)
+        self.assertEqual(resturant.Name, "Kevin's BBQ")
         
-    def test_get_delete_restaurant(self):
-        resolver_1 = resolve('/restaurants/delete/1')
-        self.assertEqual(resolver_1.view_name, 'Restaurant.views.deleteRestaurant')
-        resolver_2 = resolve('/restaurants/delete/2')
-        self.assertEqual(resolver_2.view_name, 'Restaurant.views.deleteRestaurant')
+    def test_get_deleteRestaurant(self):
+        count = Restaurant.objects.all().count()
+        self.assertEqual(count,2)
+        response = self.client.post('/delete/1', follow=True)
+        count = Restaurant.objects.all().count()
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, '/')
+        self.assertEqual(count,1)
+class TestResturantViewNotLoggedIn(TestCase):
+    def setUp(self):
+        #Simulate 2 resturants
+        resturant1 = Restaurant.objects.create(Name='Pizza Palace', Style='Italian', Price=100,
+                                         Img='None',Distance=1.5, Address='清水河畔', Rating=4.5)
+        resturant2 = Restaurant.objects.create(Name='Bobs BBQ', Style='BBQ', Price=65, 
+                                         Img='None',Distance=3, Address='農安街', Rating=1.5)
+        forms.RestaurantCreate(resturant1)
+        forms.RestaurantCreate(resturant2)
+        
+    def test_get_addRestaurant_No(self):
+        response = self.client.get('/add/')
+        self.assertRedirects(response, '/')
+        self.assertEqual(response.status_code, 302)
+        
+    def test_get_editRestaurant_No(self):
+        response_1 = self.client.get('/edit/1')
+        self.assertRedirects(response_1, '/')
+        self.assertEqual(response_1.status_code, 302)
+        response_2 = self.client.get('/edit/2')
+        self.assertRedirects(response_2, '/')
+        self.assertEqual(response_2.status_code, 302)
+        
+    def test_get_deleteRestaurant_No(self):
+        # Make sure before delete there are 2 resturants
+        count = Restaurant.objects.all().count()
+        self.assertEqual(count,2)
+        response = self.client.post('/delete/1', follow=True)
+        # Make sure after delete there are still 2 resturants
+        count = Restaurant.objects.all().count()
+        self.assertEqual(count,2)
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, '/')
