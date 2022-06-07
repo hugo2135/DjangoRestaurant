@@ -35,6 +35,6 @@ def editAccount(request,account_id):
     account_form = UserCreationForm(request.POST or None, instance=account_selected)
     if account_form.is_valid():
         account_form.save()
-        return redirect('register')
+        return redirect('index')
                                                         #account_form is a var used in the html
     return render(request, 'registration/editAccount.html', {'account_form':account_form})
