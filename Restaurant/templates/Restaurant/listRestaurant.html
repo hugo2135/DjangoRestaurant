@@ -10,7 +10,7 @@
     <title>NTUT Restaurant</title>
   </head>
   <body>
-    <nav class = "navbar navbar-expand-lg navbar-black bg-dark">
+    <nav class = "navbar navbar-expand-lg navbar-light bg-light" style="background-color: #e3f2fd;">
       <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
         <a class="navbar-brand" href="{% url 'index' %}"><h4>NTUT Restaurant Recommendation System</h4></a>
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
@@ -21,6 +21,16 @@
             <a class="nav-link" href="{% url 'add-restaurant' %}"><h4>Add Restaurant</h4></a>
           </li>
         </ul>
+        {% if user.is_authenticated %}
+        <span class="navbar-text">
+          今天想吃什麼?{{ user.username }}
+        </span>
+        <a href="{% url 'logout' %}">登出</a>
+        {% else %}
+        <span class="navbar-text">
+          今天想吃什麼? 訪客，或是你想先<a href="{% url 'login' %}">登入</a>?
+        </span>
+        {% endif %}
       </div>
     </nav>
     <div class="container-fluid">
@@ -28,6 +38,10 @@
       <h4 class="text-center p-5">
         Hi Restaurant Recommendation System~
       </h4>
+      
+      {% if Authenticated_msg != None%}
+      <h1 class="text-center p-5">{{ Authenticated_msg }}</h1>
+      {% endif %}
 
       <div class="card-column">
         {% for R in RestaurantList %}

@@ -1,0 +1,15 @@
+{% extends 'home/base.html' %}
+
+{% block content %}
+<div class="container">
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input class="btn btn-primary" type="submit" value="submit">
+        {% if error != None %}
+            {{ error }}
+        {% endif %}
+    </form>
+</div>
+<p>還未擁有帳號? 從<a href="{% url 'register' %}">這裡註冊</a></p>
+{% endblock %}

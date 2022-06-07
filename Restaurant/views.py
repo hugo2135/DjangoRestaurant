@@ -5,11 +5,19 @@ from .forms import RestaurantCreate
 from django.http import HttpResponse
 
 # Create your views here.
+list_of_render = {
+    'RestaurantList' : None,
+    'Authenticated_msg' : None
+}
 def index(request):
     RestaurantList = Restaurant.objects.all()
-    return render(request, 'Restaurant/listRestaurant.html', {'RestaurantList' : RestaurantList})
+    list_of_render['RestaurantList'] = RestaurantList
+    return render(request, 'Restaurant/listRestaurant.html', list_of_render)
 
 def addRestaurant(request):
+    if not request.user.is_authenticated:
+        list_of_render['Authenticated_msg'] = '欲操作餐廳資料，請先登入'
+        return redirect('index')
     addRestaurant = RestaurantCreate()
     if request.method == 'POST':
         addRestaurant = RestaurantCreate(request.POST, request.FILES)
@@ -22,6 +30,9 @@ def addRestaurant(request):
         return render(request, 'Restaurant/editRestaurant.html', {'Restaurant_form':addRestaurant})
 
 def editRestaurant(request, restaturant_id):
+    if not request.user.is_authenticated:
+        list_of_render['Authenticated_msg'] = '欲操作餐廳資料，請先登入'
+        return redirect('index')
     restaturant_id = int(restaturant_id)
     try:
         restaturant_selected = Restaurant.objects.get(id = restaturant_id)
@@ -34,6 +45,9 @@ def editRestaurant(request, restaturant_id):
     return render(request, 'Restaurant/editRestaurant.html', {'Restaurant_form':restaturant_form})
 
 def deleteRestaurant(request, restaturant_id):
+    if not request.user.is_authenticated:
+        list_of_render['Authenticated_msg'] = '欲操作餐廳資料，請先登入'
+        return redirect('index')
     try:
         restaturant_selected = Restaurant.objects.get(id = restaturant_id)
     except:
