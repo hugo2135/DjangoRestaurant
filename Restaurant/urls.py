@@ -5,9 +5,10 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('', views.index, name='index'),
+    path('random/', views.random_get_restaurant, name='random'),
     path('add/', views.addRestaurant, name='add-restaurant'),
-    path('edit/<int:restaturant_id>', views.editRestaurant),
-    path('delete/<int:restaturant_id>', views.deleteRestaurant)
+    path('edit/<int:restaturant_id>', views.editRestaurant, name = 'edit'),
+    path('delete/<int:restaturant_id>', views.deleteRestaurant),
 ]
 
 if DEBUG :
