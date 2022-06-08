@@ -3,10 +3,8 @@ from django.test import TestCase
 from django.urls import resolve
 from Restaurant.models import Restaurant
 from . import views,forms
-from selenium import webdriver
 from django.contrib.auth.models import User
 
-# Create your tests her
 class ResturantModelTestCase(TestCase):
     def setUp(self):
         Restaurant.objects.create(Name='Pizza Palace', Style='Italian', Price=100,

@@ -7,12 +7,12 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 
-    <title>NTUT Restaurant</title>
+    <title>Account Management</title>
   </head>
   <body>
     <nav class = "navbar navbar-expand-lg navbar-light bg-light" style="background-color: #e3f2fd;">
       <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
-        <a class="navbar-brand" href="{% url 'index' %}"><h4>NTUT Restaurant Recommendation System</h4></a>
+        <a class="navbar-brand" href="{% url 'index' %}"><h4>NTUT Resturant Recommendation System</h4></a>
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
           <li class="nav-item">
             <a class="nav-link" href="{% url 'admin:index' %}"><h4>Admin panel</h4></a>
@@ -23,7 +23,9 @@
           <li class="nav-item">
             <a class="nav-link" href="{% url 'accounts-index' %}"><h4>Account Management</h4></a>
           </li>
+          
         </ul>
+        
         {% if user.is_authenticated %}
         <span class="navbar-text">
           今天想吃什麼?{{ user.username }}
@@ -34,44 +36,35 @@
           今天想吃什麼? 訪客，或是你想先<a href="{% url 'login' %}">登入</a>?
         </span>
         {% endif %}
+        
       </div>
     </nav>
     <div class="container-fluid">
       {% block content %}
       {% include 'registration/messages.html'%}
       <h4 class="text-center p-5">
-      Restaurant Recommendation System
+        Manage Accounts
       </h4>
-      
-      {% if Authenticated_msg != None%}
-      <h1 class="text-center p-5">{{ Authenticated_msg }}</h1>
-      {% endif %}
-
       <div class="card-column">
-        {% for R in RestaurantList %}
+        {% for A in account_list %}
         <div class="card" style="width: 18rem;">
-          {% if R.Img.url != None %}
-          <img class="card-img-top" src="{{R.Img.url}}">
-          {% endif %}
-          <div class="card-body">
-            <h5 class="card-title">{{R.Name}}</h5>
-            <p class="card-text">Style: {{R.Style}}</p>
-            <p class="card-text">Average Price: {{R.Price}}</p>
-            <p class="card-text">Distance of {{R.Distance}} Km</p>
+        {% if A.username != 'admin'%}
+          <div class="card-body">  
+            <h5 class="card-title">{{A.username}}</h5>
             <center>
-              <a href="resturant/{{ R.id }}" class="btn btn-secondary" id="{{ R.id }}">Info</a>
-              <a href="resturant/edit/{{ R.id }}" class="btn btn-primary" id="{{ R.id }}">Edit</a>
-              <a href="resturant/delete/{{ R.id }}" class="btn btn-danger" id="{{ R.id }}">Delete</a>
+              <a href="edit/{{ A.id }}" class="btn btn-primary" id="{{ A.id }}">Edit</a>
+              <a href="delete/{{ A.id }}" class="btn btn-danger" id="{{ A.id }}">Delete</a>
             </center>
+            {% endif %}
           </div>
         </div>
         {% endfor %}
       </div>
       {% endblock %}
     </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+      <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
       <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
   </body>
 </html>

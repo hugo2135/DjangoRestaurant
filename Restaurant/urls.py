@@ -6,8 +6,9 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('', views.index, name='index'),
     path('add/', views.addRestaurant, name='add-restaurant'),
-    path('edit/<int:restaturant_id>', views.editRestaurant),
-    path('delete/<int:restaturant_id>', views.deleteRestaurant)
+    path('resturant/edit/<int:restaturant_id>', views.editRestaurant),
+    path('resturant/delete/<int:restaturant_id>', views.deleteRestaurant),
+    path('resturant/<int:restaturant_id>', views.viewResturantInfo)
 ]
 
 if DEBUG :
