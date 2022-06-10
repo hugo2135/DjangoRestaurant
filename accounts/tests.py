@@ -21,7 +21,7 @@ class UserCreation(TestCase):
         self.assertEqual(user.username, 'testuser')
         self.assertTrue(user.check_password('abcdef123456'))
         
-class AccountTest(TestCase):
+class AccountTestLoggedIn(TestCase):
     def setUp(self):
         self.data = {
             'username': 'testuser',
@@ -34,6 +34,7 @@ class AccountTest(TestCase):
         }
         User.objects.create_user(**self.data)
         form = UserCreationForm(data=self.data2)
+        self.client.login(username= 'testuser', password= 'abcdef123456')
         if form.is_valid:
             form.save()
     def test_login(self):
@@ -69,10 +70,19 @@ class AccountTest(TestCase):
                                                         'password2': 'abcdef123456'},
                                                         follow=True)
         self.assertEqual(response.status_code,200)
-        self.assertRedirects(response, '/')
+        self.assertRedirects(response, '/accounts/')
         self.client.login(username= 'testuser3', password= 'abcdef123456')
         self.assertTrue(response)
         # Check User doesn't exit
         response = self.client.get('/accounts/edit/3')
         self.assertEqual(response.status_code,302)
         self.assertRedirects(response, '/accounts/register/')
+        
+    def test_deleteAccount(self):
+        count = User.objects.all().count()
+        self.assertEqual(count, 2)
+        response = self.client.get('/accounts/delete/1')
+        self.assertEqual(response.status_code,302)
+        count = User.objects.all().count()
+        self.assertEqual(count, 1)
+        
