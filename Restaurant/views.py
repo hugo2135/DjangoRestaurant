@@ -37,7 +37,11 @@ randomrestaurant_info = None
 
 def random_get_restaurant(request):
     RestaurantList = list(Restaurant.objects.all())
-    random_restaurant = rd.choice(RestaurantList)
+    try:
+        random_restaurant = rd.choice(RestaurantList)
+    except:
+        messages.error(request, '沒有餐廳資料')
+        return redirect('index')
     messages.success(request, f'隨機餐廳為 {random_restaurant.Name}, 好好體驗沒吃過的餐廳!')
     return redirect(f'/resturant/{random_restaurant.id}')       
     # return render(request, 'Restaurant/ResturantInfo.html', {'Restaurant_selected':random_restaurant},{'isRandomRecommend':True})
