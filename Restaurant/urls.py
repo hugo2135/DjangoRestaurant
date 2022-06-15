@@ -5,7 +5,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('random/', views.random_get_restaurant, name='random'),
+    path('random/', views.random_recommend_restaurant, name='random'),
     path('add/', views.addRestaurant, name='add-restaurant'),
     path('resturant/edit/<int:restaturant_id>', views.editRestaurant),
     path('resturant/delete/<int:restaturant_id>', views.deleteRestaurant),

@@ -1,11 +1,12 @@
-import email
-import imp
-from urllib import response
-from django.test import TestCase,Client
-from . import views
+# import email
+# import imp
+from django.test import TestCase
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-
+from django import setup
+import os
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "RestaurantRecommendSystem.settings")
+setup()
 # Create your tests here.
 
 class UserCreation(TestCase):    

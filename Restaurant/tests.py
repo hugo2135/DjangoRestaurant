@@ -1,9 +1,12 @@
-from urllib import response
 from django.test import TestCase
 from django.urls import resolve
 from Restaurant.models import Restaurant
-from . import views,forms
+from Restaurant import forms
 from django.contrib.auth.models import User
+from django import setup
+import os
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'RestaurantRecommendSystem.settings')
+setup()
 
 class ResturantModelTestCase(TestCase):
     def setUp(self):
@@ -163,4 +166,3 @@ class TestResturantRecommendation(TestCase):
     def test_random_resturant_recommendation(self):
         response = self.client.post('/random/')
         self.assertEqual(response.status_code, 302)
-        
