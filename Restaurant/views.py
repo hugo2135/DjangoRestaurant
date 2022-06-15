@@ -36,25 +36,11 @@ randomrestaurant_info = None
 #     return render(request, 'Restaurant/listRestaurant.html', temp_list)
 
 def random_get_restaurant(request):
-    RestaurantList = Restaurant.objects.all()
-    global random_msg_trigger
-    random_msg_trigger = True
-    num = RestaurantList.last().id    #latest id of Restaurant
-    sign = True
-    Id = rd.randint(1, num)
-    random_restaurant = None
-    while(Id <= num and sign):
-        try:
-            random_restaurant = RestaurantList.get(id = Id)
-            sign = False
-        except:
-            sign = True
-            print(f'ID:{Id} restaurant not found.')
-            Id = rd.randint(1, num)
-            
-    global randomrestaurant_info
-    randomrestaurant_info = random_restaurant
-    return redirect('index')
+    RestaurantList = list(Restaurant.objects.all())
+    random_restaurant = rd.choice(RestaurantList)
+    messages.success(request, f'隨機餐廳為 {random_restaurant.Name}, 好好體驗沒吃過的餐廳!')
+    return redirect(f'/resturant/{random_restaurant.id}')       
+    # return render(request, 'Restaurant/ResturantInfo.html', {'Restaurant_selected':random_restaurant},{'isRandomRecommend':True})
 
 
 
@@ -79,10 +65,6 @@ def index(request):
 
 def addRestaurant(request):
     if not request.user.is_authenticated:
-        global authenticated_msg_trigger
-        global authenticated_msg
-        authenticated_msg_trigger = True
-        authenticated_msg = '欲操作餐廳資料，請先登入'
         #list_of_render['Authenticated_msg'] = '欲操作餐廳資料，請先登入'
         messages.error(request, '欲新增餐廳，請先登入')
         return redirect('index')

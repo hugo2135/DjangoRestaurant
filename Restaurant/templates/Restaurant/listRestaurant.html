@@ -55,9 +55,7 @@
         <a href="{% url 'random' %}"  class="btn btn-success" id="rdbtn">Random</a>
       </div>      
       
-      {% if Authenticated_msg != None%}
-      <h1 class="text-center p-5">{{ Authenticated_msg }}</h1>
-      {% endif %}
+
 
       <div class="card-column">
         {% for R in RestaurantList %}

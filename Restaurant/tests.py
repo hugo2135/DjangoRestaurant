@@ -93,14 +93,14 @@ class TestResturantViewLoggedIn(TestCase):
         
     def test_get_editRestaurant(self):
         # Check used correct template
-        response_1 = self.client.get('/edit/1')
+        response_1 = self.client.get('/resturant/edit/1')
         self.assertEqual(response_1.status_code, 200)
         self.assertTemplateUsed(response_1, 'Restaurant/editRestaurant.html')
-        response_2 = self.client.get('/edit/2')
+        response_2 = self.client.get('/resturant/edit/2')
         self.assertEqual(response_2.status_code, 200)
         self.assertTemplateUsed(response_2, 'Restaurant/editRestaurant.html')
         # Check Resturant correctly edited
-        response = self.client.post('/edit/1', self.added_data, follow=True)
+        response = self.client.post('/resturant/edit/1', self.added_data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertRedirects(response, '/')
         resturant = Restaurant.objects.get(id=1)
@@ -109,7 +109,7 @@ class TestResturantViewLoggedIn(TestCase):
     def test_get_deleteRestaurant(self):
         count = Restaurant.objects.all().count()
         self.assertEqual(count,2)
-        response = self.client.post('/delete/1', follow=True)
+        response = self.client.post('/resturant/delete/1', follow=True)
         count = Restaurant.objects.all().count()
         self.assertEqual(response.status_code, 200)
         self.assertRedirects(response, '/')
@@ -130,10 +130,10 @@ class TestResturantViewNotLoggedIn(TestCase):
         self.assertEqual(response.status_code, 302)
         
     def test_get_editRestaurant_No(self):
-        response_1 = self.client.get('/edit/1')
+        response_1 = self.client.get('/resturant/edit/1')
         self.assertRedirects(response_1, '/')
         self.assertEqual(response_1.status_code, 302)
-        response_2 = self.client.get('/edit/2')
+        response_2 = self.client.get('/resturant/edit/2')
         self.assertRedirects(response_2, '/')
         self.assertEqual(response_2.status_code, 302)
         
@@ -141,9 +141,26 @@ class TestResturantViewNotLoggedIn(TestCase):
         # Make sure before delete there are 2 resturants
         count = Restaurant.objects.all().count()
         self.assertEqual(count,2)
-        response = self.client.post('/delete/1', follow=True)
+        response = self.client.post('/resturant/delete/1', follow=True)
         # Make sure after delete there are still 2 resturants
         count = Restaurant.objects.all().count()
         self.assertEqual(count,2)
         self.assertEqual(response.status_code, 200)
         self.assertRedirects(response, '/')
+        
+class TestResturantRecommendation(TestCase):
+    def setUp(self):
+        resturant1 = Restaurant.objects.create(Name='Pizza Palace', Style='Italian', Price=100,
+                                         Img='None',Distance=1.5, Address='清水河畔', Rating=4.5)
+        resturant2 = Restaurant.objects.create(Name='Bobs BBQ', Style='BBQ', Price=65, 
+                                         Img='None',Distance=3, Address='農安街', Rating=1.5)
+        resturant3 = Restaurant.objects.create(Name="Kevins BBQ", Style='BBQ', Price=500,
+                                            Img='None',Distance=6, Address='行天宮', Rating=4.5)
+        forms.RestaurantCreate(resturant1)
+        forms.RestaurantCreate(resturant2)
+        forms.RestaurantCreate(resturant3)
+        
+    def test_random_resturant_recommendation(self):
+        response = self.client.post('/random/')
+        self.assertEqual(response.status_code, 302)
+        
