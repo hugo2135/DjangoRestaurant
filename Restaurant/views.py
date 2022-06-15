@@ -18,9 +18,7 @@ def random_recommend_restaurant(request):
         random_restaurant = rd.choice(RestaurantList)
     except:
         messages.error(request, '沒有餐廳資料')
-        return redirect('index')
-    # messages.success(request, f'隨機餐廳為 {random_restaurant.Name}, 好好體驗沒吃過的餐廳!')
-    # return redirect(f'/resturant/{random_restaurant.id}')       
+        return redirect('index')     
     return render(request, 'Restaurant/listRestaurant_random.html', {'Restaurant_selected':random_restaurant,'RandomRestaurant':True})
     
 #def filter_recommend_restaurant(request):

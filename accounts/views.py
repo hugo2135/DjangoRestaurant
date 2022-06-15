@@ -29,8 +29,7 @@ def register(request):
             messages.error(request, '註冊失敗')
             context['error'] = form.errors
     else:
-        form = UserCreationForm()
-        
+        form = UserCreationForm()    
     context['form'] = form
     return render(request, 'registration/register.html', context)
 

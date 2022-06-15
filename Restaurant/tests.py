@@ -165,4 +165,8 @@ class TestResturantRecommendation(TestCase):
         
     def test_random_resturant_recommendation(self):
         response = self.client.post('/random/')
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'Restaurant/listRestaurant_random.html')
+        self.assertContains(response, response.context['Restaurant_selected'].Name)
+        print(f"{response.context['Restaurant_selected'].Name} is the recommended resturant")
+
