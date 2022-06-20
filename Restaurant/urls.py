@@ -9,7 +9,8 @@ urlpatterns = [
     path('add/', views.addRestaurant, name='add-restaurant'),
     path('resturant/edit/<int:restaturant_id>', views.editRestaurant),
     path('resturant/delete/<int:restaturant_id>', views.deleteRestaurant),
-    path('resturant/<int:restaturant_id>', views.viewResturantInfo)
+    path('resturant/<int:restaturant_id>', views.viewResturantInfo),
+    path('resturant/rating/<int:restaturant_id>', views.ratingRestaurant)
 ]
 
 if DEBUG :

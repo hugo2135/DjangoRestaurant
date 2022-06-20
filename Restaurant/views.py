@@ -45,7 +45,6 @@ def index(request):
 
 def addRestaurant(request):
     if not request.user.is_authenticated:
-        #list_of_render['Authenticated_msg'] = '欲操作餐廳資料，請先登入'
         messages.error(request, '欲新增餐廳，請先登入')
         return redirect('index')
     addRestaurant = RestaurantCreate()
@@ -67,6 +66,8 @@ def viewResturantInfo(request, restaturant_id):
     except Restaurant.DoesNotExist:
         messages.error(request, '餐廳不存在')
         return redirect('index')
+    
+    print(request.GET.get('rate'))
     return render(request, 'Restaurant/ResturantInfo.html', {'Restaurant_selected':resturant_selected})
 
 def editRestaurant(request, restaturant_id):
@@ -85,10 +86,12 @@ def editRestaurant(request, restaturant_id):
         messages.error(request, '餐廳不存在')
         return redirect('index')
     restaturant_form = RestaurantCreate(request.POST or None, instance=restaturant_selected)
+    
     if restaturant_form.is_valid():
         restaturant_form.save()
         messages.success(request, f'餐廳編輯成功 ({restaturant_selected.Name})')
         return redirect('index')
+    
     return render(request, 'Restaurant/editRestaurant.html', {'Restaurant_form':restaturant_form})
 
 def deleteRestaurant(request, restaturant_id):
@@ -109,3 +112,9 @@ def deleteRestaurant(request, restaturant_id):
     
     messages.success(request, f'餐廳刪除成功 ({restaturant_selected.Name})')
     return redirect('index')
+
+def ratingRestaurant(request, restaturant_id):
+    if not request.user.is_authenticated:
+        messages.error(request, '欲新增餐廳，請先登入')
+    print(request.GET.get('Rate'))
+    return redirect('/resturant/'+str(restaturant_id))
