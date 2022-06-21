@@ -44,7 +44,7 @@ def index(request):
     return render(request, 'Restaurant/listRestaurant.html', list_of_render)
 
 def addRestaurant(request):
-    if not request.user.is_authenticated:
+    if not request.user.is_staff:
         messages.error(request, '欲新增餐廳，請先登入')
         return redirect('index')
     addRestaurant = RestaurantCreate()
@@ -71,13 +71,8 @@ def viewResturantInfo(request, restaturant_id):
     return render(request, 'Restaurant/ResturantInfo.html', {'Restaurant_selected':resturant_selected})
 
 def editRestaurant(request, restaturant_id):
-    if not request.user.is_authenticated:
-        global authenticated_msg_trigger
-        global authenticated_msg
-        authenticated_msg_trigger = True
-        authenticated_msg = '欲操作餐廳資料，請先登入'
-        #list_of_render['Authenticated_msg'] = '欲操作餐廳資料，請先登入'
-        messages.error(request, '欲編輯餐廳，請先登入')
+    if not request.user.is_staff:
+        messages.error(request, '欲編輯餐廳，請先登入管理員')
         return redirect('index')
     restaturant_id = int(restaturant_id)
     try:
@@ -95,13 +90,8 @@ def editRestaurant(request, restaturant_id):
     return render(request, 'Restaurant/editRestaurant.html', {'Restaurant_form':restaturant_form})
 
 def deleteRestaurant(request, restaturant_id):
-    if not request.user.is_authenticated:
-        global authenticated_msg_trigger
-        global authenticated_msg
-        authenticated_msg_trigger = True
-        authenticated_msg = '欲操作餐廳資料，請先登入'
-        #list_of_render['Authenticated_msg'] = '欲操作餐廳資料，請先登入'
-        messages.error(request, '欲刪除餐廳，請先登入')
+    if not request.user.is_staff:
+        messages.error(request, '欲刪除餐廳，請先登入管理員')
         return redirect('index')
     try:
         restaturant_selected = Restaurant.objects.get(id = restaturant_id)

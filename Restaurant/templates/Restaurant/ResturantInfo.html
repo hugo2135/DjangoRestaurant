@@ -47,8 +47,10 @@
         <p class="h7">Distance: {{Restaurant_selected.Distance}} Km</p>
         <p class="h7">Address: {{Restaurant_selected.Address}}</p>
         <p class="h7">Rating: {{Restaurant_selected.Rating}}</p>
+        {% if user.is_staff %}
         <a href="edit/{{ Restaurant_selected.id }}" class="btn btn-primary" id="{{ Restaurant_selected.id }}">Edit</a>
         <a href="delete/{{ Restaurant_selected.id }}" class="btn btn-danger" id="{{ Restaurant_selected.id }}">Delete</a>
+        {% endif %}
       </div>
       <br><br/>
       <br><br/>

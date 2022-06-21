@@ -8,11 +8,14 @@ list_of_render = {
 }
 # Create your views here.
 def accounts_index(request):
+    if not request.user.is_staff:
+        messages.error(request, '欲管理帳號，請先登入管理員')
+        return redirect('index')
     AccountList = User.objects.all()
     list_of_render['account_list'] = AccountList
     return render(request, 'registration/listAccount.html',list_of_render)
 
-def register(request):
+def register(request):    
     context = {
         'form':None,
         'error':None
@@ -34,8 +37,8 @@ def register(request):
     return render(request, 'registration/register.html', context)
 
 def editAccount(request,account_id):
-    if not request.user.is_authenticated:
-        messages.error(request, '欲編輯帳戶，請先登入')
+    if not request.user.is_staff:
+        messages.error(request, '欲編輯帳戶，請先登入管理員')
         return redirect('accounts-index')
     account_id = int(account_id)
     try:
@@ -51,8 +54,8 @@ def editAccount(request,account_id):
     return render(request, 'registration/editAccount.html', {'account_form':account_form})
 
 def deleteAccount(request,account_id):
-    if not request.user.is_authenticated:
-        messages.error(request, '欲刪除帳戶，請先登入')
+    if not request.user.is_staff:
+        messages.error(request, '欲刪除帳戶，請先登入管理員')
         return redirect('accounts-index')
     account_id = int(account_id)
     try:

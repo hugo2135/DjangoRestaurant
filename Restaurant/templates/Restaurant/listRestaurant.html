@@ -68,11 +68,13 @@
             <p class="card-text">Style: {{R.Style}}</p>
             <p class="card-text">Average Price: {{R.Price}}</p>
             <p class="card-text">Distance of {{R.Distance}} Km</p>
+            {% if user.is_staff %}
             <center>
               <a href="resturant/{{ R.id }}" class="btn btn-secondary" id="{{ R.id }}">Info</a>
               <a href="resturant/edit/{{ R.id }}" class="btn btn-primary" id="{{ R.id }}">Edit</a>
               <a href="resturant/delete/{{ R.id }}" class="btn btn-danger" id="{{ R.id }}">Delete</a>
             </center>
+            {% endif %}
           </div>
         </div>
         {% endfor %}
