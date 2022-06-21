@@ -49,7 +49,7 @@
         <p class="h7">Rating: {{Restaurant_selected.Rating}}</p>
         {% if user.is_staff %}
         <a href="edit/{{ Restaurant_selected.id }}" class="btn btn-primary" id="{{ Restaurant_selected.id }}">Edit</a>
-        <a href="delete/{{ Restaurant_selected.id }}" class="btn btn-danger" id="{{ Restaurant_selected.id }}">Delete</a>
+        <a href="delete/{{ Restaurant_selected.id }}" class="btn btn-danger" id="{{ Restaurant_selected.id }}" onclick="return confirm('Are you sure you want to delete this?')">Delete</a>
         <a href="/" class="btn btn-dark" >Return to Menu</a>
         {% endif %}
       </div>
