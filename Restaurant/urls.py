@@ -10,7 +10,8 @@ urlpatterns = [
     path('resturant/edit/<int:restaturant_id>', views.editRestaurant),
     path('resturant/delete/<int:restaturant_id>', views.deleteRestaurant),
     path('resturant/<int:restaturant_id>', views.viewResturantInfo),
-    path('resturant/rating/<int:restaturant_id>', views.ratingRestaurant)
+    path('resturant/rating/<int:restaturant_id>', views.ratingRestaurant),
+    path('preference/', views.filter_recommend_restaurant, name='preference')
 ]
 
 if DEBUG :
