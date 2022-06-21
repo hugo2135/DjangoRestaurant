@@ -23,6 +23,9 @@ def random_recommend_restaurant(request):
     return render(request, 'Restaurant/listRestaurant_random.html', {'Restaurant_selected':random_restaurant,'RandomRestaurant':True})
     
 def filter_recommend_restaurant(request):
+    filter_distance = None
+    filter_price = None
+    filter_rating = None
     if request.method == 'POST' and (request.POST["filter_name"]!="" or request.POST["filter_style"]!="" or request.POST["filter_price"]!="" or request.POST["filter_distance"]!="" or request.POST["filter_rating"]!=""):
         filter_name = request.POST["filter_name"]
         filtered_restaurants = Restaurant.objects.all().filter(Name__contains=filter_name)
@@ -39,7 +42,7 @@ def filter_recommend_restaurant(request):
             filtered_restaurants = filtered_restaurants.filter(Rating__gte=filter_rating)
         filtered_restaurants = filtered_restaurants.order_by('-Rating')
         messages.success(request, '搜尋成功')
-        return render(request, 'Restaurant/preference.html', {'Restaurant_preferenced':filtered_restaurants,'Filter_name':filter_name, 'Filter_style':filter_style})
+        return render(request, 'Restaurant/preference.html', {'Restaurant_preferenced':filtered_restaurants,'Filter_name':filter_name,'Filter_style':filter_style,'Filter_distance':filter_distance,'Filter_price':filter_price,'Filter_rating':filter_rating})
     else:
         messages.error(request, '請先輸入餐廳偏好')
         return redirect('index')
