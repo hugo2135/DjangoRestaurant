@@ -43,34 +43,19 @@
       {% block content %}
       {% include 'registration/messages.html'%}
       <h4 class="text-center p-5">
-      Restaurant Recommendation System
+      Restaurants with your preferences: {{Filter_name}} {{Filter_style}}
       </h4>
-      <form class="d-flex" method=POST action="{% url 'preference' %}">
-        {% csrf_token %}
-      <p align="right">
-        <p> Name <input class="form-control me-2" type="search" placeholder="Search Name" aria-label="Search" name="filter_name" ></p>
-        <p> Style<input class="form-control me-2" type="search" placeholder="Search Style" aria-label="Search" name="filter_style" ></p>
-        <p> Distance<input class="form-control me-2" type="search" placeholder="Search Distance" aria-label="Search" name="filter_distance"></p>
-        <p> Price<input class="form-control me-2" type="search" placeholder="Search Price" aria-label="Search" name="filter_price"></p>
-        <p> Rating<input class="form-control me-2" type="search" placeholder="Search Rating" aria-label="Search" name="filter_rating"></p>
-      </p>
-        <p><button class="btn-btn-outline-secondary" type="submit" >Search</button></p>
-
-      </form>
+      <center>
       <div class="container">        
-        {% comment %} {% if RandomRestaurant == None %}        
-        <p>今天應該要吃: <input type="text" readonly="readonly" id="rdrs"></p>
-        {% else %}
-        <p>今天應該要吃: <input type="text" value="{{ Restaurant_selected.Name }}" readonly="readonly" id="rdrs"></p>
-        {% endif %} {% endcomment %}
-        <a href="{% url 'random' %}"  class="btn btn-success" id="rdbtn">Random Resturant?</a>
-        {% comment %} <a href="{% url 'preference' %}" class="btn btn-primary">Have a preference?</a> {% endcomment %}
-      </div>       
+        <a href="{% url 'random' %}"  class="btn btn-success" id="rdbtn">Don't like these Resturants? Try Random!</a>
+        <a href="{% url 'preference' %}" class="btn btn-primary">Have another preference?</a>
+      </div> 
+      </center>       
       
-
+      {% if Restaurant_preferenced%}
       <h2 class="title">Restaurant List</h2>
       <div class="card-column">
-        {% for R in RestaurantList %}
+        {% for R in Restaurant_preferenced %}
         <div class="card" style="width: 18rem;">
           {% if R.Img.url != None %}
           <img class="card-img-top" src="{{R.Img.url}}">
@@ -82,15 +67,19 @@
             <p class="card-text">Distance of {{R.Distance}} Km</p>
             {% if user.is_staff %}
             <center>
-              <a href="resturant/{{ R.id }}" class="btn btn-secondary" id="{{ R.id }}">Info</a>
-              <a href="resturant/edit/{{ R.id }}" class="btn btn-primary" id="{{ R.id }}">Edit</a>
-              <a href="resturant/delete/{{ R.id }}" class="btn btn-danger" id="{{ R.id }}" onclick="return confirm('Are you sure you want to delete this?')">Delete</a>
+              <head>
+                <base href="http://127.0.0.1:8000/">
+              </head>
+              <a href="resturant/{{ R.id }}" class="btn btn-primary">Info</a>
             </center>
             {% endif %}
           </div>
         </div>
         {% endfor %}
       </div>
+      {% else %}
+      <h2 class="title">No Restaurant fits your preference!</h2>
+      {% endif %}
       {% endblock %}
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>

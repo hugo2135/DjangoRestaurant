@@ -1,5 +1,6 @@
 from glob import glob
 from pickle import FALSE
+from unicodedata import decimal
 from django.shortcuts import render, redirect
 from .models import Restaurant
 from .forms import RestaurantCreate
@@ -21,7 +22,27 @@ def random_recommend_restaurant(request):
         return redirect('index')     
     return render(request, 'Restaurant/listRestaurant_random.html', {'Restaurant_selected':random_restaurant,'RandomRestaurant':True})
     
-#def filter_recommend_restaurant(request):
+def filter_recommend_restaurant(request):
+    if request.method == 'POST' and (request.POST["filter_name"]!="" and request.POST["filter_style"]!="" and request.POST["filter_price"]!="" and request.POST["filter_distance"]!="" and request.POST["rating"]!=""):
+        filter_name = request.POST["filter_name"]
+        filtered_restaurants = Restaurant.objects.all().filter(Name__contains=filter_name)
+        filter_style = request.POST["filter_style"]
+        filtered_restaurants = filtered_restaurants.filter(Style__contains=filter_style)
+        if request.POST["filter_distance"] != "":
+            filter_distance = float(request.POST["filter_distance"])
+            filtered_restaurants = filtered_restaurants.filter(Distance__lte=filter_distance)
+        if request.POST["filter_price"] != "":
+            filter_price = float(request.POST["filter_price"])
+            filtered_restaurants = filtered_restaurants.filter(Price__lte=filter_price)
+        if request.POST["filter_rating"] != "":
+            filter_rating = float(request.POST["filter_rating"])
+            filtered_restaurants = filtered_restaurants.filter(Rating__gte=filter_rating)
+        filtered_restaurants = filtered_restaurants.order_by('-Rating')
+        messages.success(request, '搜尋成功')
+        return render(request, 'Restaurant/preference.html', {'Restaurant_preferenced':filtered_restaurants,'Filter_name':filter_name, 'Filter_style':filter_style})
+    else:
+        messages.error(request, '請先輸入餐廳偏好')
+        return redirect('index')
     
 
 def index(request):
