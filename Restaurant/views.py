@@ -23,7 +23,7 @@ def random_recommend_restaurant(request):
     return render(request, 'Restaurant/listRestaurant_random.html', {'Restaurant_selected':random_restaurant,'RandomRestaurant':True})
     
 def filter_recommend_restaurant(request):
-    if request.method == 'POST' and (request.POST["filter_name"]!="" and request.POST["filter_style"]!="" and request.POST["filter_price"]!="" and request.POST["filter_distance"]!="" and request.POST["rating"]!=""):
+    if request.method == 'POST' and (request.POST["filter_name"]!="" or request.POST["filter_style"]!="" or request.POST["filter_price"]!="" or request.POST["filter_distance"]!="" or request.POST["filter_rating"]!=""):
         filter_name = request.POST["filter_name"]
         filtered_restaurants = Restaurant.objects.all().filter(Name__contains=filter_name)
         filter_style = request.POST["filter_style"]
