@@ -45,18 +45,19 @@
       <h4 class="text-center p-5">
       Restaurant Recommendation System
       </h4>
-
+      <center>
       <div class="container">        
-        {% if RandomRestaurant == None %}        
+        {% comment %} {% if RandomRestaurant == None %}        
         <p>今天應該要吃: <input type="text" readonly="readonly" id="rdrs"></p>
         {% else %}
         <p>今天應該要吃: <input type="text" value="{{ Restaurant_selected.Name }}" readonly="readonly" id="rdrs"></p>
-        {% endif %}
-        <a href="{% url 'random' %}"  class="btn btn-success" id="rdbtn">Random</a>
-      </div>      
+        {% endif %} {% endcomment %}
+        <a href="{% url 'random' %}"  class="btn btn-success" id="rdbtn">Random Resturant?</a>
+      </div> 
+      </center>       
       
 
-
+      <h2 class="title">Restaurant List</h2>
       <div class="card-column">
         {% for R in RestaurantList %}
         <div class="card" style="width: 18rem;">
@@ -72,7 +73,7 @@
             <center>
               <a href="resturant/{{ R.id }}" class="btn btn-secondary" id="{{ R.id }}">Info</a>
               <a href="resturant/edit/{{ R.id }}" class="btn btn-primary" id="{{ R.id }}">Edit</a>
-              <a href="resturant/delete/{{ R.id }}" class="btn btn-danger" id="{{ R.id }}">Delete</a>
+              <a href="resturant/delete/{{ R.id }}" class="btn btn-danger" id="{{ R.id }}" onclick="return confirm('Are you sure you want to delete this?')">Delete</a>
             </center>
             {% endif %}
           </div>
