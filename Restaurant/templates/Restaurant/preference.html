@@ -42,43 +42,47 @@
     <div class="container-fluid">
       {% block content %}
       {% include 'registration/messages.html'%}
-      <h4 class="text-center p-5">
-      Restaurants with your preferences: {{Filter_name}} {{Filter_style}}
-      </h4>
       <center>
       <div class="container">        
         <a href="{% url 'random' %}"  class="btn btn-success" id="rdbtn">Don't like these Resturants? Try Random!</a>
-        <a href="{% url 'preference' %}" class="btn btn-primary">Have another preference?</a>
+        <a href="{% url 'index' %}" class="btn btn-primary">Have other preferences?</a>
       </div> 
       </center>       
       
       {% if Restaurant_preferenced%}
-      <h2 class="title">Restaurant List</h2>
-      <div class="card-column">
+        <h2 class="title">Restaurants with your preferences:</h2>
+        <h5>
+          {% if Filter_name != "" %} Name including: {{Filter_name}}   {% endif %}
+          {% if Filter_style != "" %} Style: {{Filter_style}}  {% endif %}
+          {% if Filter_distance %} Min Distance: {{Filter_distance}}   {% endif %}
+          {% if Filter_price %} Max Price: {{Filter_price}}   {% endif %} 
+          {% if Filter_rating %} Min Rating: {{Filter_rating}} {% endif %}
+        </h5>
+        <div class="card-column">
         {% for R in Restaurant_preferenced %}
-        <div class="card" style="width: 18rem;">
-          {% if R.Img.url != None %}
-          <img class="card-img-top" src="{{R.Img.url}}">
-          {% endif %}
-          <div class="card-body">
-            <h5 class="card-title"><a href="resturant/{{ R.id }}">{{R.Name}}</a></h5>
-            <p class="card-text">Style: {{R.Style}}</p>
-            <p class="card-text">Average Price: {{R.Price}}</p>
-            <p class="card-text">Distance of {{R.Distance}} Km</p>
-            {% if user.is_staff %}
-            <center>
-              <head>
-                <base href="http://127.0.0.1:8000/">
-              </head>
-              <a href="resturant/{{ R.id }}" class="btn btn-primary">Info</a>
-            </center>
+          <div class="card" style="width: 18rem;">
+            {% if R.Img.url != None %}
+            <img class="card-img-top" src="{{R.Img.url}}">
             {% endif %}
+            <div class="card-body">
+              <h5 class="card-title"><a href="resturant/{{ R.id }}">{{R.Name}}</a></h5>
+              <p class="card-text">Style: {{R.Style}}</p>
+              <p class="card-text">Average Price: {{R.Price}}</p>
+              <p class="card-text">Distance of {{R.Distance}} Km</p>
+              {% if user.is_staff %}
+                <center>
+                <head>
+                  <base href="http://127.0.0.1:8000/">
+                </head>
+                <a href="resturant/{{ R.id }}" class="btn btn-primary">Info</a>
+                </center>
+              {% endif %}
+            </div>
           </div>
-        </div>
         {% endfor %}
-      </div>
-      {% else %}
-      <h2 class="title">No Restaurant fits your preference!</h2>
+        </div>
+        {% else %}
+          <h2 class="title">No Restaurant fits your preference!</h2>
       {% endif %}
       {% endblock %}
     </div>
