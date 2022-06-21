@@ -6,3 +6,9 @@ class RestaurantCreate(forms.ModelForm):
     class Meta:
         model = Restaurant
         fields = '__all__'
+    
+class RaingRestaurant(forms.ModelForm):
+
+    class Meta:
+        model = Restaurant
+        fields = ('Rating',)

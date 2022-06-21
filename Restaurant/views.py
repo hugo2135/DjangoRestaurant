@@ -2,7 +2,7 @@ from glob import glob
 from pickle import FALSE
 from django.shortcuts import render, redirect
 from .models import Restaurant
-from .forms import RestaurantCreate
+from .forms import RestaurantCreate, RaingRestaurant
 from django.http import HttpResponse
 import random as rd
 from django.contrib import messages
@@ -62,13 +62,18 @@ def addRestaurant(request):
 def viewResturantInfo(request, restaturant_id):
     restaturant_id = int(restaturant_id)
     try:
-        resturant_selected = Restaurant.objects.get(id = restaturant_id)
+        restaurant_selected = Restaurant.objects.get(id = restaturant_id)
     except Restaurant.DoesNotExist:
         messages.error(request, '餐廳不存在')
         return redirect('index')
     
-    print(request.GET.get('rate'))
-    return render(request, 'Restaurant/ResturantInfo.html', {'Restaurant_selected':resturant_selected})
+    rating_form = RaingRestaurant(request.POST or None, instance=restaurant_selected)
+
+    if rating_form.is_valid():
+        rating_form.save()
+        messages.success(request, f'評價成功')
+        return redirect('/resturant/'+str(restaturant_id))
+    return render(request, 'Restaurant/ResturantInfo.html', {'Restaurant_selected':restaurant_selected, 'rating':rating_form})
 
 def editRestaurant(request, restaturant_id):
     if not request.user.is_staff:
@@ -105,6 +110,20 @@ def deleteRestaurant(request, restaturant_id):
 
 def ratingRestaurant(request, restaturant_id):
     if not request.user.is_authenticated:
-        messages.error(request, '欲新增餐廳，請先登入')
-    print(request.GET.get('Rate'))
-    return redirect('/resturant/'+str(restaturant_id))
+        messages.error(request, '欲評價餐廳，請先登入')
+        return redirect('/resturant/'+str(restaturant_id))
+    restaturant_id = int(restaturant_id)
+    try:
+        restaturant_selected = Restaurant.objects.get(id = restaturant_id)
+    except Restaurant.DoesNotExist:
+        messages.error(request, '錯誤')
+        return redirect('/resturant/'+str(restaturant_id))
+    
+    rating_form = RaingRestaurant(request.POST or None, instance=restaturant_selected)
+
+    if rating_form.is__valid():
+        rating_form.save()
+        messages.success(request, f'餐廳編輯成功 ({restaturant_selected.Name})')
+        return redirect('/resturant/'+str(restaturant_id))
+
+    return render(request, 'Restaurant/ResturantInfo.html', {'Restaurant_selected':resturant_selected, 'rating':rating_form})

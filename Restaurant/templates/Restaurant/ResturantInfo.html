@@ -48,25 +48,24 @@
         <p class="h7">Address: {{Restaurant_selected.Address}}</p>
         <p class="h7">Rating: {{Restaurant_selected.Rating}}</p>
         {% if user.is_staff %}
-        <a href="edit/{{ Restaurant_selected.id }}" class="btn btn-primary" id="{{ Restaurant_selected.id }}">Edit</a>
-        <a href="delete/{{ Restaurant_selected.id }}" class="btn btn-danger" id="{{ Restaurant_selected.id }}">Delete</a>
+          <a href="edit/{{ Restaurant_selected.id }}" class="btn btn-primary" id="{{ Restaurant_selected.id }}">Edit</a>
+          <a href="delete/{{ Restaurant_selected.id }}" class="btn btn-danger" id="{{ Restaurant_selected.id }}">Delete</a>
         {% endif %}
       </div>
       <br><br/>
       <br><br/>
-      {% if user.is_authenticated %}
-        <tbody>
-          <tr>
-            <th>評價此餐廳</th>
-            <td><input type="number" name="Rate" step="0.1" id="rate"></td>
-          </tr>
-          <tr>
-            <br><br/>
-            <input type="submit" class="btn btn-warning" value="送出評價">
-            <!-- <a href="rating/{{ Restaurant_selected.id }}" class="btn btn-warning" id="{{ Restaurant_selected.id }}">送出評價</a> -->
-          </tr>
-        </tbody>
-      {% endif %}
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <table class="w-50 table table-light" style="border-radius: 10px;">
+            {% for field in rating %}
+            <tr>
+              <th><p>評價此餐廳</p></th>
+              <td>{{ field }}</td>
+            </tr>
+            {% endfor %}
+          </table>
+          <button type="submit" class="btn btn-lg btn-success md-5">送出評價</button>
+        </form>
       {% endblock %}
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
