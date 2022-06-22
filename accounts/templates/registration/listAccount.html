@@ -18,29 +18,6 @@
         <a href="edit/{{ A.id }}" class="btn btn-primary" id="{{ A.id }}">編輯</a>
         <a href="delete/{{ A.id }}" class="btn btn-danger" id="{{ A.id }}" onclick="return confirm('Are you sure you want to delete this?')">刪除</a>
       </div>
-    </nav>
-    <div class="container-fluid">
-      {% block content %}
-      {% include 'registration/messages.html'%}
-      <h4 class="text-center p-5">
-        Manage Accounts
-      </h4>
-      <div class="card-column">
-        {% for A in account_list %}
-        <div class="card" style="width: 18rem;">
-        {% if A.username != 'admin'%}
-          <div class="card-body">  
-            <h5 class="card-title">{{A.username}}</h5>
-            <center>
-              <a href="edit/{{ A.id }}" class="btn btn-primary" id="{{ A.id }}">Edit</a>
-              <a href="delete/{{ A.id }}" class="btn btn-danger" id="{{ A.id }}" onclick="return confirm('Are you sure you want to delete this?')">Delete</a>
-            </center>
-            {% endif %}
-          </div>
-        </div>
-        {% endfor %}
-      </div>
-      {% endblock %}
     </div>
     {% endif %}
     {% endfor %}
