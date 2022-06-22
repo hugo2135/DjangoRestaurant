@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     'Restaurant',
     'homeApp',
     'accounts',
-    'star_ratings'
+    'star_ratings',
+    'django_seed',
 ]
 
 MIDDLEWARE = [

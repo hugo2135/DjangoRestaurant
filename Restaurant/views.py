@@ -32,15 +32,28 @@ def filter_recommend_restaurant(request):
         filter_style = request.POST["filter_style"]
         filtered_restaurants = filtered_restaurants.filter(Style__contains=filter_style)
         if request.POST["filter_distance"] != "":
-            filter_distance = float(request.POST["filter_distance"])
+            try:
+                filter_distance = float(request.POST["filter_distance"])
+            except:
+                messages.error(request, '距離請輸入數字')
+                return redirect('index')
             filtered_restaurants = filtered_restaurants.filter(Distance__lte=filter_distance)
         if request.POST["filter_price"] != "":
-            filter_price = float(request.POST["filter_price"])
+            try:
+                filter_price = float(request.POST["filter_price"])
+            except:
+                messages.error(request, '價格請輸入數字')
+                return redirect('index')
             filtered_restaurants = filtered_restaurants.filter(Price__lte=filter_price)
         if request.POST["filter_rating"] != "":
-            filter_rating = float(request.POST["filter_rating"])
+            try:
+                filter_rating = float(request.POST["filter_rating"])
+            except:
+                messages.error(request, '評分請輸入數字')
+                return redirect('index')
             filtered_restaurants = filtered_restaurants.filter(Rating__gte=filter_rating)
         filtered_restaurants = filtered_restaurants.order_by('-Rating__average')
+        print(filter_name,filter_style,filter_distance,filter_price,filter_rating)
         messages.success(request, '搜尋成功')
         return render(request, 'Restaurant/preference.html', {'Restaurant_preferenced':filtered_restaurants,'Filter_name':filter_name,'Filter_style':filter_style,'Filter_distance':filter_distance,'Filter_price':filter_price,'Filter_rating':filter_rating})
     else:

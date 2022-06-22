@@ -49,7 +49,14 @@
         {% csrf_token %}
       <p align="right">
         <p> Name <input class="form-control me-2" type="search" placeholder="Search Name" aria-label="Search" name="filter_name" ></p>
-        <p> Style<input class="form-control me-2" type="search" placeholder="Search Style" aria-label="Search" name="filter_style" ></p>
+        <p> Style
+          <select class="form-select" aria-label="Style select" name="filter_style">
+          <option value = "" selected>Select Style</option>
+          <option value="Noodle">Noodle</option>
+          <option value="Fast Food">Fast Food</option>
+          <option value="Italian">Italian</option>
+        </select>
+      </p>
         <p> Distance<input class="form-control me-2" type="search" placeholder="Search Distance" aria-label="Search" name="filter_distance"></p>
         <p> Price<input class="form-control me-2" type="search" placeholder="Search Price" aria-label="Search" name="filter_price"></p>
         <p> Rating<input class="form-control me-2" type="search" placeholder="Search Rating" aria-label="Search" name="filter_rating"></p>
