@@ -1,83 +1,35 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    {% load static %}
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+{% extends "base.html" %}
+{% load ratings %}
 
-    <title>NTUT Restaurant</title>
-    
-  </head>
-  <body>
-    <nav class = "navbar navbar-expand-lg navbar-light bg-light" style="background-color: #e3f2fd;">
+{% block title %}
+隨機找到的餐廳...
+{% endblock %}
 
-      <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
-        <a class="navbar-brand" href="{% url 'index' %}"><h4>NTUT Restaurant Recommendation System</h4></a>
-        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'admin:index' %}"><h4>Admin panel</h4></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'add-restaurant' %}"><h4>Add Restaurant</h4></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'accounts-index' %}"><h4>Account Management</h4></a>
-          </li>
-        </ul>
-        {% if user.is_authenticated %}
-        <span class="navbar-text">
-          今天想吃什麼?{{ user.username }}
-        </span>
-        <a href="{% url 'logout' %}">登出</a>
-        {% else %}
-        <span class="navbar-text">
-          今天想吃什麼? 訪客，或是你想先<a href="{% url 'login' %}">登入</a>?
-        </span>
-        {% endif %}
-      </div>
+{% block content %}
+<div class="container-fluid">
+  
+  {% comment %} {% include 'registration/messages.html'%} {% endcomment %}
+  <br><br><br>
+  <div class="container">        
+    {% if RandomRestaurant == None %}        
+    <p>今天應該要吃: <input type="text" readonly="readonly" id="rdrs"></p>
+    <a href="random" class="btn btn-success" id="rdbtn">Random</a>
+    {% else %}
+    <p>今天應該要吃: <input type="text" value="{{ Restaurant_selected.Name }}" readonly="readonly" id="rdrs"></p>
+    {% endif %}
+    <a href="/random/" class="btn btn-success" id="rdbtn">不喜歡這間嗎?再骰一次</a>
 
-    </nav>
-    <div class="container-fluid">
-      {% block content %}
-      {% comment %} {% include 'registration/messages.html'%} {% endcomment %}
-      <h4 class="text-center p-5">
-      Restaurant Recommendation System
-      </h4>
-
-      <div class="container">        
-        {% if RandomRestaurant == None %}        
-        <p>今天應該要吃: <input type="text" readonly="readonly" id="rdrs"></p>
-        <a href="random" class="btn btn-success" id="rdbtn">Random</a>
-        {% else %}
-        <p>今天應該要吃: <input type="text" value="{{ Restaurant_selected.Name }}" readonly="readonly" id="rdrs"></p>
-        {% endif %}
-        <a href="/random/" class="btn btn-success" id="rdbtn">Don't like this Resturant? Random again!</a>
-
-      </div>      
-      <pre>
-
-      </pre>
-      <div class="container">
-        <h5 class="title">{{Restaurant_selected.Name}}</h5>
-        <p class="h7">Style: {{Restaurant_selected.Style}}</p>
-        <p class="h7">Average Price: {{Restaurant_selected.Price}}</p>
-        <p class="h7">Distance: {{Restaurant_selected.Distance}} Km</p>
-        <p class="h7">Address: {{Restaurant_selected.Address}}</p>
-        <p class="h7">Rating: {{Restaurant_selected.Rating}}</p>
-        <center>
-          <a href="edit/{{ Restaurant_selected.id }}" class="btn btn-primary" id="{{ Restaurant_selected.id }}">Edit</a>
-          <a href="delete/{{ Restaurant_selected.id }}" class="btn btn-danger" id="{{ Restaurant_selected.id }}">Delete</a>
-        </center>
-      </div>
-    </div>
+  </div>      
+  <div class="main">
+    <br><br/>
+    <h5 class="title"><a href="/resturant/{{ Restaurant_selected.id }}">{{Restaurant_selected.Name}}</a></h5>
+    <p class="h7">Style: {{Restaurant_selected.Style}}</p>
+    <p class="h7">Average Price: {{Restaurant_selected.Price}}</p>
+    <p class="h7">Distance: {{Restaurant_selected.Distance}} Km</p>
+    <p class="h7">Address: {{Restaurant_selected.Address}}</p>
+    {% ratings Restaurant_selected %}
+    <br><br>
+    <a href="/" class="btn btn-dark" >返回首頁</a>
   </div>
-      {% endblock %}
-    </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-      <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-  </body>
-</html>
+</div>
+{% endblock %}

@@ -1,8 +1,9 @@
 from glob import glob
 from pickle import FALSE
+from unicodedata import decimal
 from django.shortcuts import render, redirect
 from .models import Restaurant
-from .forms import RestaurantCreate, RaingRestaurant
+from .forms import RestaurantCreate
 from django.http import HttpResponse
 import random as rd
 from django.contrib import messages
@@ -21,7 +22,30 @@ def random_recommend_restaurant(request):
         return redirect('index')     
     return render(request, 'Restaurant/listRestaurant_random.html', {'Restaurant_selected':random_restaurant,'RandomRestaurant':True})
     
-#def filter_recommend_restaurant(request):
+def filter_recommend_restaurant(request):
+    filter_distance = None
+    filter_price = None
+    filter_rating = None
+    if request.method == 'POST' and (request.POST["filter_name"]!="" or request.POST["filter_style"]!="" or request.POST["filter_price"]!="" or request.POST["filter_distance"]!="" or request.POST["filter_rating"]!=""):
+        filter_name = request.POST["filter_name"]
+        filtered_restaurants = Restaurant.objects.all().filter(Name__contains=filter_name)
+        filter_style = request.POST["filter_style"]
+        filtered_restaurants = filtered_restaurants.filter(Style__contains=filter_style)
+        if request.POST["filter_distance"] != "":
+            filter_distance = float(request.POST["filter_distance"])
+            filtered_restaurants = filtered_restaurants.filter(Distance__lte=filter_distance)
+        if request.POST["filter_price"] != "":
+            filter_price = float(request.POST["filter_price"])
+            filtered_restaurants = filtered_restaurants.filter(Price__lte=filter_price)
+        if request.POST["filter_rating"] != "":
+            filter_rating = float(request.POST["filter_rating"])
+            filtered_restaurants = filtered_restaurants.filter(Rating__gte=filter_rating)
+        filtered_restaurants = filtered_restaurants.order_by('-Rating__average')
+        messages.success(request, '搜尋成功')
+        return render(request, 'Restaurant/preference.html', {'Restaurant_preferenced':filtered_restaurants,'Filter_name':filter_name,'Filter_style':filter_style,'Filter_distance':filter_distance,'Filter_price':filter_price,'Filter_rating':filter_rating})
+    else:
+        messages.error(request, '請先輸入餐廳偏好')
+        return redirect('index')
     
 
 def index(request):
@@ -62,18 +86,13 @@ def addRestaurant(request):
 def viewResturantInfo(request, restaturant_id):
     restaturant_id = int(restaturant_id)
     try:
-        restaurant_selected = Restaurant.objects.get(id = restaturant_id)
+        resturant_selected = Restaurant.objects.get(id = restaturant_id)
     except Restaurant.DoesNotExist:
         messages.error(request, '餐廳不存在')
         return redirect('index')
     
-    rating_form = RaingRestaurant(request.POST or None, instance=restaurant_selected)
-
-    if rating_form.is_valid():
-        rating_form.save()
-        messages.success(request, f'評價成功')
-        return redirect('/resturant/'+str(restaturant_id))
-    return render(request, 'Restaurant/ResturantInfo.html', {'Restaurant_selected':restaurant_selected, 'rating':rating_form})
+    print(request.GET.get('rate'))
+    return render(request, 'Restaurant/ResturantInfo.html', {'Restaurant_selected':resturant_selected})
 
 def editRestaurant(request, restaturant_id):
     if not request.user.is_staff:
@@ -111,19 +130,4 @@ def deleteRestaurant(request, restaturant_id):
 def ratingRestaurant(request, restaturant_id):
     if not request.user.is_authenticated:
         messages.error(request, '欲評價餐廳，請先登入')
-        return redirect('/resturant/'+str(restaturant_id))
-    restaturant_id = int(restaturant_id)
-    try:
-        restaturant_selected = Restaurant.objects.get(id = restaturant_id)
-    except Restaurant.DoesNotExist:
-        messages.error(request, '錯誤')
-        return redirect('/resturant/'+str(restaturant_id))
-    
-    rating_form = RaingRestaurant(request.POST or None, instance=restaturant_selected)
-
-    if rating_form.is__valid():
-        rating_form.save()
-        messages.success(request, f'餐廳編輯成功 ({restaturant_selected.Name})')
-        return redirect('/resturant/'+str(restaturant_id))
-
-    return render(request, 'Restaurant/ResturantInfo.html', {'Restaurant_selected':resturant_selected, 'rating':rating_form})
+    return redirect('/resturant/'+str(restaturant_id))

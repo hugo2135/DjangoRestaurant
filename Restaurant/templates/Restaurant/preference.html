@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}
+您想找的餐廳
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">  
+  <center>
+  <div class="container">        
+    <a href="{% url 'random' %}"  class="btn btn-success" id="rdbtn">不喜歡嗎?隨機選一下</a>
+    <a href="{% url 'index' %}" class="btn btn-primary">修改條件</a>
+  </div> 
+  </center>       
+  
+  {% if Restaurant_preferenced%}
+    <h2 class="title">根據您的喜好，我們找到:</h2>
+    <h5>
+      {% if Filter_name != "" %} 餐廳名稱: {{Filter_name}}   {% endif %}
+      {% if Filter_style != "" %} 餐廳風格: {{Filter_style}}  {% endif %}
+      {% if Filter_distance %} 距離: {{Filter_distance}}   {% endif %}
+      {% if Filter_price %} 價格限制: {{Filter_price}} {% endif %} 
+      {% if Filter_rating %} 最低評價: {{Filter_rating}} {% endif %}
+    </h5>
+    <div class="row row-cols-1 row-cols-md-2 g-4" id="RestaurantList">
+    {% for R in Restaurant_preferenced %}
+    <div class="card text-center h-100" style="width: 25rem;">
+      {% if R.Img.url != None %}
+      <img class="card-img-top" src="{{R.Img.url}}">
+      {% endif %}
+      <div class="card-body">
+        <h5 class="card-title"><a href="/resturant/{{ R.id }}">{{R.Name}}</a></h5>
+        <p class="card-text">Style: {{R.Style}}</p>
+        <p class="card-text">Average Price: {{R.Price}}</p>
+        <p class="card-text">Distance of {{R.Distance}} Km</p>
+          <a href="/resturant/{{ R.id }}" class="btn btn-secondary" id="{{ R.id }}">餐廳資訊</a>
+          {% if user.is_staff %}
+          <a href="/resturant/edit/{{ R.id }}" class="btn btn-primary" id="{{ R.id }}">編輯餐廳</a>
+          <a href="/resturant/delete/{{ R.id }}" class="btn btn-danger" id="{{ R.id }}" onclick="return confirm('Are you sure you want to delete this?')">刪除餐廳</a>
+          {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+    </div>
+    {% else %}
+      <h2 class="title">找不到你要的餐廳欸 : (</h2>
+  {% endif %}
+</div>
+{% endblock %}
