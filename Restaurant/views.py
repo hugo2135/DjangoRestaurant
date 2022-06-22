@@ -129,6 +129,5 @@ def deleteRestaurant(request, restaturant_id):
 
 def ratingRestaurant(request, restaturant_id):
     if not request.user.is_authenticated:
-        messages.error(request, '欲新增餐廳，請先登入')
-    print(request.GET.get('Rate'))
+        messages.error(request, '欲評價餐廳，請先登入')
     return redirect('/resturant/'+str(restaturant_id))
