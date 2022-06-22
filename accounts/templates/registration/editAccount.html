@@ -1,9 +1,15 @@
-{% extends 'home/base.html' %}
+{% extends 'base.html' %}
+
+{% block title %}
+使用者編輯
+{% endblock %}
 
 {% block content %}
+<br><br>
 <center>
     <form method="POST" enctype="multipart/form-data">
-        <h1>Edit account</h1>
+        <h1>編輯使用者</h1>
+        <br><br>
         {% csrf_token %}
         <table class="w-50 table table-light" style="border-radius: 10px;">
             {% for field in account_form %}
@@ -13,8 +19,9 @@
             </tr>
             {% endfor %}
         </table>
-        <button type="submit" class="btn btn-lg btn-success md-5">Submit</button>
-        <a href="/accounts" class="btn btn-dark" >Return to Menu</a>
+        <br>
+        <button type="submit" class="btn btn-success md-5">儲存資訊</button>
+        <a href="/accounts" class="btn btn-dark" >返回列表</a>
     </form>
 </center>
 {% endblock %}

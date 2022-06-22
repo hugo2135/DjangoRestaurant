@@ -1,5 +1,6 @@
-{% extends 'Restaurant/listRestaurant.html' %}
+{% extends 'base.html' %}
 {% block content %}
+<br>
 <center>
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
@@ -11,8 +12,8 @@
             </tr>
             {% endfor %}
         </table>
-        <button type="submit" class="btn btn-lg btn-success md-5">Submit</button>
-        <a href="/" class="btn btn-dark" >Return to Menu</a>
+        <button type="submit" class="btn btn-success md-5">儲存餐廳</button>
+        <a href="/" class="btn btn-dark" >返回首頁</a>
     </form>
 </center>
 
