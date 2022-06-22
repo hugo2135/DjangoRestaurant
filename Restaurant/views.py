@@ -6,47 +6,23 @@ from .forms import RestaurantCreate
 from django.http import HttpResponse
 import random as rd
 from django.contrib import messages
-
-# Create your views here.
-
 random_msg_trigger = True
 authenticated_msg_trigger = False
 
 authenticated_msg = None
 randomrestaurant_info = None
 
-# def random_get_restaurant(request):
-#     RestaurantList = Restaurant.objects.all()
-#     num = RestaurantList.last().id    #latest id of Restaurant
-#     sign = True
-#     Id = rd.randint(1, num)
-#     random_restaurant = None
-#     while(Id <= num and sign):
-#         try:
-#             random_restaurant = RestaurantList.get(id = Id)
-#             sign = False
-#         except:
-#             sign = True
-#             print(f'ID:{Id} restaurant not found.')
-#             Id = rd.randint(1, num)
-            
-#     print(f'ID = {Id}')
-#     temp_list = list_of_render
-#     temp_list['RandomRestaurant'] = random_restaurant.Name
-#     return render(request, 'Restaurant/listRestaurant.html', temp_list)
-
-def random_get_restaurant(request):
+def random_recommend_restaurant(request):
     RestaurantList = list(Restaurant.objects.all())
     try:
         random_restaurant = rd.choice(RestaurantList)
     except:
         messages.error(request, '沒有餐廳資料')
-        return redirect('index')
-    messages.success(request, f'隨機餐廳為 {random_restaurant.Name}, 好好體驗沒吃過的餐廳!')
-    return redirect(f'/resturant/{random_restaurant.id}')       
-    # return render(request, 'Restaurant/ResturantInfo.html', {'Restaurant_selected':random_restaurant},{'isRandomRecommend':True})
-
-
+        return redirect('index')     
+    return render(request, 'Restaurant/listRestaurant_random.html', {'Restaurant_selected':random_restaurant,'RandomRestaurant':True})
+    
+#def filter_recommend_restaurant(request):
+    
 
 def index(request):
     list_of_render = {

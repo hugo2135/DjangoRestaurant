@@ -3,7 +3,7 @@
 <center>
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        <table class="w-50 table table-light" style="border-radius: 10px;">
+        <table class="w-50 table table-light" style="border-radius: 10px; margin-top: 50px;">
             {% for field in Restaurant_form %}
             <tr>
                 <th>{{ field.label }}</th>
@@ -15,3 +15,4 @@
     </form>
 </center>
 {% endblock %}
+

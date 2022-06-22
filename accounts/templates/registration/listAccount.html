@@ -6,61 +6,112 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-
+    <link href="https://fonts.googleapis.com/css2?family=Charis+SIL:ital,wght@1,700&display=swap" rel="stylesheet">
     <title>Account Management</title>
+    <style> 
+      .sidenav {
+        height:100%;
+        width:210px;
+        position: fixed;
+        z-index:1;
+        top:0;
+        left:0;
+        background-image: linear-gradient(to top, #8a8692 0%, #dae0f1 100%);
+        overflow-x: hidden;
+        padding-top:20px;
+		  }
+
+      .sidenav a {
+        padding:6px 8px 6px 16px;
+        text-decoration: none;
+        font-size:25px;
+        color: #736b6b;
+        display:block;
+        }
+
+      .sidenav a:hover{
+        color:#f1f1f1;
+      }
+
+      .main{
+        margin-left:200px;
+      }
+
+      header{
+        display: flex;
+        justify-content: space-between;
+        border-bottom: thick double #71858d;
+      }
+
+      .navbar-text{
+        margin-right: 20px;
+        margin-top: 5px;
+        font-size:20px;
+      }
+      .logo{
+        align-self: flex-end;
+        font-size:25px;
+        font-family: 'Charis SIL', serif;
+      }
+      a {
+        text-decoration:none;
+      }
+      .card{
+        margin-left: 25px;
+      }
+    </style>
   </head>
   <body>
-    <nav class = "navbar navbar-expand-lg navbar-light bg-light" style="background-color: #e3f2fd;">
-      <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
-        <a class="navbar-brand" href="{% url 'index' %}"><h4>NTUT Resturant Recommendation System</h4></a>
-        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'admin:index' %}"><h4>Admin panel</h4></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'add-restaurant' %}"><h4>Add Restaurant</h4></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'accounts-index' %}"><h4>Account Management</h4></a>
-          </li>
-          
-        </ul>
+    
+    <div class="sidenav"> <!--hi-->
+		  <a class="nav-link" href="{% url 'index' %}">home</a>
+		  <a class="nav-link" href="{% url 'admin:index' %}">Admin panel</a>
+		  <a class="nav-link" href="{% url 'add-restaurant' %}">Add Restaurant</a>
+      <a class="nav-link" href="{% url 'accounts-index' %}">Account Management</a>
+	  </div>
+    
+    <div id="content" name="content" class="main">
+      
+      <div class="container-fluid">
+        {% block content %}
         
-        {% if user.is_authenticated %}
-        <span class="navbar-text">
-          今天想吃什麼?{{ user.username }}
-        </span>
-        <a href="{% url 'logout' %}">登出</a>
-        {% else %}
-        <span class="navbar-text">
-          今天想吃什麼? 訪客，或是你想先<a href="{% url 'login' %}">登入</a>?
-        </span>
-        {% endif %}
+        <header> <!--hi-->
+          <div class="p-2 logo">
+            Hi Restaurant Recommendation System~
+          </div>
+          {% if user.is_authenticated %}
+          <span class="navbar-text">
+            今天想吃什麼?{{ user.username }}
+          </span>
+          <a href="{% url 'logout' %}">登出</a>
+          {% else %}
+          <span class="navbar-text">
+            今天想吃什麼? 訪客，或是你想先<a href="{% url 'login' %}">登入</a>?
+          </span>
+          {% endif %}
+        </header>
         
-      </div>
-    </nav>
-    <div class="container-fluid">
-      {% block content %}
       {% include 'registration/messages.html'%}
-      <h4 class="text-center p-5">
+      <h4 class="text-center p-3">
         Manage Accounts
       </h4>
-      <div class="card-column">
+      <div class="row row-cols-1 row-cols-md-2 g-4">
         {% for A in account_list %}
-        <div class="card" style="width: 18rem;">
         {% if A.username != 'admin'%}
+        <div class="card" style="width: 18rem;">   
           <div class="card-body">  
             <h5 class="card-title">{{A.username}}</h5>
             <center>
               <a href="edit/{{ A.id }}" class="btn btn-primary" id="{{ A.id }}">Edit</a>
               <a href="delete/{{ A.id }}" class="btn btn-danger" id="{{ A.id }}">Delete</a>
             </center>
-            {% endif %}
           </div>
         </div>
+        {% endif %}
         {% endfor %}
       </div>
       {% endblock %}
+    </div>
     </div>
       <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
       <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
