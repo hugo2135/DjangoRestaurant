@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'Restaurant',
     'homeApp',
-    'accounts'
+    'accounts',
+    'star_ratings'
 ]
 
 MIDDLEWARE = [
